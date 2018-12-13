@@ -2,24 +2,31 @@ library(dplyr)
 library(tidyr)
 library(readr)
 
-# Import feature names, training data and test data
-# feature_names <- read_delim('./dataset/features.txt', " ", col_names = F)
+# Import feature names, training, test, and subject data
 feature_names <- read_table('./dataset/features.txt', col_names = F)
 x_test <- read_table('./dataset/test/X_test.txt', col_names = F)
 y_test <- read_table('./dataset/test/y_test.txt', col_names = F)
+sub_test <- read_table('./dataset/test/subject_test.txt', col_names = F)
 x_train <- read_table('./dataset/train/X_train.txt', col_names = F)
 y_train <- read_table('./dataset/train/y_train.txt', col_names = F)
+sub_train <- read_table('./dataset/train/subject_train.txt', col_names = F)
 
 # Add feature names to each dataset
 names(x_test) <- feature_names$X1
 names(x_train) <- feature_names$X1
 
-# Add activity variables
+# Add activity and subject variables
 x_test$activity <- y_test$X1
+x_test$subject <- sub_test$X1
 x_train$activity <- y_train$X1
+x_train$subject <- sub_train$X1
 
-x_test <- x_test %>%
-  select(activity, contains('mean()'), contains('std()')) %>%
+# Bind the training and test sets together
+tidy_data <- bind_rows(x_test, x_train)
+
+# Filter out un-wanted columns and format activity column
+tidy_data <- tidy_data %>%
+  select(subject, activity, contains('mean()'), contains('std()')) %>%
   mutate(activity = case_when(
     activity == 1 ~ 'WALKING',
     activity == 2 ~ 'WALKING_UPSTAIRS',
@@ -30,13 +37,11 @@ x_test <- x_test %>%
   ))
 
 # Tidy column names
-names(x_test) <- gsub(x = names(x_test), pattern = ' ', replacement = '')
-names(x_test) <- gsub(x = names(x_test), pattern = '\\(\\)', replacement = '')
-names(x_test) <- gsub(x = names(x_test), pattern = '[0-9]', replacement = '')
-names(x_test) <- gsub(x = names(x_test), pattern = 'Acc', replacement = 'Acceleration')
-names(x_test) <- gsub(x = names(x_test), pattern = 'Mag', replacement = 'Magnitude')
-names(x_test) <- gsub(x = names(x_test), pattern = 'mean', replacement = 'Mean')
-names(x_test) <- gsub(x = names(x_test), pattern = 'std', replacement = 'Std')
+names(tidy_data) <- gsub(x = names(tidy_data), pattern = '(\\s)|(\\(\\))|[0-9]', replacement = '')
+names(tidy_data) <- gsub(x = names(tidy_data), pattern = 'Acc', replacement = 'Acceleration')
+names(tidy_data) <- gsub(x = names(tidy_data), pattern = 'Mag', replacement = 'Magnitude')
+names(tidy_data) <- gsub(x = names(tidy_data), pattern = 'mean', replacement = 'Mean')
+names(tidy_data) <- gsub(x = names(tidy_data), pattern = 'std', replacement = 'Std')
 
 
 
