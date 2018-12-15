@@ -50,3 +50,4 @@ summarized_tidy_data <- tidy_data %>%
 
 # Remove unneeded variables
 remove(list = c('feature_names', 'sub_test', 'sub_train', 'x_test', 'x_train', 'y_test', 'y_train'))
+write.table(tidy_data, file = 'tidy-data.txt', row.names = F)
