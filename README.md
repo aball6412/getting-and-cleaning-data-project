@@ -1,7 +1,7 @@
 # Getting and Cleaning Data Project
 
 ### Project setup
-The setup for the project is pretty easy. Do get it up and running do the following:
+The setup for the project is pretty easy. The key script here is called `run_analysis.R`. Running this script will automatically kick off the whole data retrieval and cleaning process. To get it up and running do the following:
 1. Clone this repo
 2. Open R Studio and change the working directory to wherever this repo was cloned to.
 3. Load the `run_analysis.R` script into R Studio.
