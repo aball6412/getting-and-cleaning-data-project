@@ -43,9 +43,10 @@ names(tidy_data) <- gsub(x = names(tidy_data), pattern = 'Mag', replacement = 'M
 names(tidy_data) <- gsub(x = names(tidy_data), pattern = 'mean', replacement = 'Mean')
 names(tidy_data) <- gsub(x = names(tidy_data), pattern = 'std', replacement = 'Std')
 
+# Create separate tidy data that averages each variable by subject and activity
+summarized_tidy_data <- tidy_data %>%
+  group_by(subject, activity) %>%
+  summarize_all(mean)
 
-
-
-
-
-
+# Remove unneeded variables
+remove(list = c('feature_names', 'sub_test', 'sub_train', 'x_test', 'x_train', 'y_test', 'y_train'))
